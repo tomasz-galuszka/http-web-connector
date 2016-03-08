@@ -16,3 +16,16 @@ Simmple library to read the web pages
         <constructor-arg name="configuration" ref="http-connector-config"/>
     </bean>
 ```
+Usage : 
+```Java
+public class GenericMdt {
+
+    @Autowired(required = true)
+    private HttpConnector httpConnector;
+
+    public Document getDocument(String url) throws HttpConnector.HttpConnectorException {
+        return httpConnector.getDocument(url);
+    }
+
+}
+```
