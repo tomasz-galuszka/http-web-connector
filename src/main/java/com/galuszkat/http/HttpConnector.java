@@ -152,7 +152,7 @@ public class HttpConnector {
             afterFirstConnection = true;
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", configuration.getBrowserName());
-            connection.setRequestProperty("Content-Type", "text/html; charset=UTF-8 ");
+            connection.setRequestProperty("Content-Type", "text/html; charset=" + configuration.getEncoding());
             boolean redirect = false;
             int responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
@@ -189,7 +189,7 @@ public class HttpConnector {
                 afterFirstConnection = true;
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("User-Agent", configuration.getBrowserName());
-                connection.setRequestProperty("Content-Type", "text/html; charset=UTF-8 ");
+                connection.setRequestProperty("Content-Type", "text/html; charset="+configuration.getEncoding());
             }
 
             responseCode = connection.getResponseCode();
