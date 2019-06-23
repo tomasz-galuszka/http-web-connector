@@ -1,5 +1,5 @@
 # http-web-connector
-Simmple library to read the web pages
+Simple java based library for web crawlers
 
 ```xml
     <bean id="http-connector-config" class="com.galuszkat.http.Configuration">
