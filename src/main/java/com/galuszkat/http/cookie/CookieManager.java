@@ -1,27 +1,18 @@
 package com.galuszkat.http.cookie;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 public class CookieManager {
 
-    private static final char DOT = '.';
     private static final String HEADER_SET_COOKIE = "Set-Cookie";
     private static final String COOKIE_VALUE_DELIMITER = ";";
     private static final String COOKIE_NAME_VALUE_SEPARATOR = "=";
 
-    private final HttpURLConnection connection;
-    private Set<Cookie> cookies;
-
-    public CookieManager(HttpURLConnection connection) {
-        this.connection = connection;
-        this.cookies = new HashSet<Cookie>();
-    }
-
-    public Set<Cookie> readCookies() {
+    public Set<Cookie> readCookies(HttpURLConnection connection) {
+        Set<Cookie> cookies = new HashSet<>();
         String headerName;
         for (int i = 1; (headerName = connection.getHeaderFieldKey(i)) != null; i++) {
             if (!headerName.equalsIgnoreCase(HEADER_SET_COOKIE)) {
@@ -35,25 +26,37 @@ public class CookieManager {
 
             Cookie cookie = null;
             if (tokenizer.hasMoreTokens()) {
-                String token = tokenizer.nextToken();
-                String name = token.substring(0, token.indexOf(COOKIE_NAME_VALUE_SEPARATOR));
-                String value = token.substring(token.indexOf(COOKIE_NAME_VALUE_SEPARATOR) + 1, token.length());
+                var token = tokenizer.nextToken();
+                var name = token.substring(0, token.indexOf(COOKIE_NAME_VALUE_SEPARATOR));
+                var value = token.substring(token.indexOf(COOKIE_NAME_VALUE_SEPARATOR) + 1);
                 cookie = new Cookie(name, value);
 
             }
-            ArrayList<Cookie> cookiesForDomain = new ArrayList<Cookie>();
-            while (tokenizer.hasMoreTokens()) {
-                String token = tokenizer.nextToken();
+            while (cookie != null && tokenizer.hasMoreTokens()) {
+                var token = tokenizer.nextToken();
                 if (!token.contains(COOKIE_NAME_VALUE_SEPARATOR)) {
                     continue;
                 }
-                String name = token.substring(0, token.indexOf(COOKIE_NAME_VALUE_SEPARATOR)).toLowerCase();
-                String value = token.substring(token.indexOf(COOKIE_NAME_VALUE_SEPARATOR) + 1, token.length());
+                var name = token.substring(0, token.indexOf(COOKIE_NAME_VALUE_SEPARATOR)).toLowerCase();
+                var value = token.substring(token.indexOf(COOKIE_NAME_VALUE_SEPARATOR) + 1);
                 cookie.add(name, value);
             }
             cookies.add(cookie);
         }
-        return this.cookies;
+        return cookies;
+    }
+
+    public static String getCookiesString(Set<Cookie> cookies) {
+        if (cookies == null || cookies.isEmpty()) {
+            return "";
+        }
+
+        var cookieBuilder = new StringBuilder();
+        for (Cookie c : cookies) {
+            cookieBuilder.append(c.convertToStringHeader()).append(";");
+        }
+        cookieBuilder.deleteCharAt(cookieBuilder.length() - 1);
+        return cookieBuilder.toString();
     }
 }
 
