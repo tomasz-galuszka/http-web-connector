@@ -1,8 +1,10 @@
 package com.galuszkat.http;
 
 import com.galuszkat.http.exception.HttpClientException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
 class HttpClientTest {
 
     private final HttpClient client = new HttpClient(Configuration.builder().build());
@@ -10,11 +12,11 @@ class HttpClientTest {
 
     @Test
     void getString() throws HttpClientException {
-        System.out.println(client.readString(HttpMethod.GET, TEST_URL));
+        log.info(client.readString(HttpMethod.GET, TEST_URL).toString());
     }
 
     @Test
     void getDocument() throws HttpClientException {
-        System.out.println(client.readDocument(HttpMethod.GET, TEST_URL).getBody().toString());
+        log.info(client.readDocument(HttpMethod.GET, TEST_URL).getBody().toString());
     }
 }
